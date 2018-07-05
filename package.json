@@ -13,6 +13,6 @@
     "poi": "^10.2.9"
   },
   "scripts": {
-    "build": "poi build number-flip.js --format umd --filename.js number-flip.min.js"
+    "build": "poi build char-flip.js --format umd --filename.js char-flip.min.js"
   }
 }
