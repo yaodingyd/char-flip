@@ -1,8 +1,8 @@
 {
-  "name": "number-flip",
+  "name": "char-flip",
   "version": "1.0.0",
   "description": "Change characters with flipping animation",
-  "main": "number-flip.js",
+  "main": "char-flip.js",
   "repository": "https://github.com/yaodingyd/char-flip.git",
   "author": "yaodingyd",
   "license": "MIT",

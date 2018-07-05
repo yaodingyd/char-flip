@@ -1,12 +1,12 @@
 # char-flip
-Change characters with flipping animation
+Change texts with flipping animation
 
 ![](./demo.gif)
 
 
 # install
 ```
-$ npm install --save number-flip
+$ npm install --save char-flip
 ```
 
 # usage
