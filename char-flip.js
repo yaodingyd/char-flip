@@ -1,27 +1,27 @@
 import { g } from 'gelerator'
 
-const maxLenNum = (aNum, bNum) => (aNum > bNum ? aNum : bNum).toString().length
-
-const num2PadNumArr = (num, len) => {
-  const padLeftStr = (rawStr, lenNum) => (rawStr.length < lenNum
-    ? padLeftStr('0' + rawStr, lenNum)
-    : rawStr)
-  const str2NumArr = rawStr => rawStr.split('').map(Number)
-  return str2NumArr(padLeftStr(num.toString(), len)).reverse()
+const padString = (str, len) => {
+  if (str.length >= len) return str
+  const fill = '_'
+  const n = Math.floor((len - str.length) / 2)
+  if (n) str = fill.repeat(n) + str + fill.repeat(n) 
+  return str.length < len ? str + fill : str
 }
+
 
 export class Flip {
   constructor({
     node,
-    from = 0,
+    from = '',
     to,
     duration = .5,
     delay,
     easeFn = (pos => (pos /= .5) < 1
                 ? .5 * Math.pow(pos, 3)
                 : .5 * (Math.pow((pos - 2), 3) + 2)),
-    systemArr = [...Array(10).keys()],
-    direct = true
+    systemArr = 'abcdefghijklmnopqrstuvwxyz_'.split(''),
+    direct = true,
+    maxLength = 4
   }) {
     this.beforeArr = []
     this.afterArr = []
@@ -29,18 +29,20 @@ export class Flip {
     this.duration = duration * 1000
     this.systemArr = systemArr
     this.easeFn = easeFn
-    this.from = from
-    this.to = to || 0
+    this.from = padString(from, maxLength)
+    this.maxLength = maxLength
+    this.to = to || ''
     this.node = node
     this.direct = direct
-    this._initHTML(maxLenNum(this.from, this.to))
+    this.base = this.systemArr.length
+    this._initHTML(maxLength)
     if (to === undefined) return
     if (delay) setTimeout(() => this.flipTo({to: this.to, direct}), delay * 1000)
     else this.flipTo({to: this.to, direct})
   }
 
   _initHTML(digits) {
-    this.node.classList.add('number-flip')
+    this.node.classList.add('char-flip')
     this.node.style.position = 'relative'
     this.node.style.overflow = 'hidden'
     ;[...Array(digits).keys()].forEach(i => {
@@ -50,9 +52,9 @@ export class Flip {
       )
       ctnr.style.position = 'relative'
       ctnr.style.display = 'inline-block'
-      this.ctnrArr.unshift(ctnr)
+      this.ctnrArr.push(ctnr)
       this.node.appendChild(ctnr)
-      this.beforeArr.push(0)
+      this.beforeArr.push(this.systemArr[0])
     })
     this.height = this.ctnrArr[0].clientHeight / (this.systemArr.length + 1)
     this.node.style.height = this.height + 'px'
@@ -60,13 +62,13 @@ export class Flip {
       this._draw({
         digit: d,
         per: 1,
-        alter: ~~(this.from / Math.pow(10, d))
+        alter: ~~(this.systemArr.indexOf(this.from[d]))
       })
   }
 
   _draw({per, alter, digit}) {
-    const from = this.beforeArr[digit]
-    const modNum = ((per * alter + from) % 10 + 10) % 10
+    const from = this.systemArr.indexOf(this.beforeArr[digit])
+    const modNum = ((per * alter + from) % this.base + this.base) % this.base
     const translateY = `translateY(${- modNum * this.height}px)`
     this.ctnrArr[digit].style.webkitTransform = translateY
     this.ctnrArr[digit].style.transform = translateY
@@ -79,12 +81,12 @@ export class Flip {
     direct = true
   }) {
     const len = this.ctnrArr.length
-    this.beforeArr = num2PadNumArr(this.from, len)
-    this.afterArr = num2PadNumArr(to, len)
+    this.beforeArr = this.from.split('')
+    this.afterArr = padString(to, this.maxLength).split('')
     const draw = per => {
       let temp = 0
       for (let d = this.ctnrArr.length - 1; d >= 0; d -= 1) {
-        let alter = this.afterArr[d] - this.beforeArr[d]
+        let alter = this.systemArr.indexOf(this.afterArr[d]) - this.systemArr.indexOf(this.beforeArr[d])
         temp += alter
         const fn = easeFn || this.easeFn
         this._draw({

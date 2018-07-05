@@ -1,19 +1,26 @@
-import { Flip } from '../number-flip.js'
+import { Flip } from '../char-flip'
 
 const $ = s => document.querySelector(s)
 
 const flip = new Flip({
   node: $('.flip'),
-  from: 725,
+  from: 'developer',
   easeFn: function(pos) {
     if ((pos/=0.5) < 1) return 0.5*Math.pow(pos,3);
     return 0.5 * (Math.pow((pos-2),3) + 2);
   },
-  systemArr: ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖']
+  maxLength: 12
 })
 
+const title = [
+  'developer',
+  'designer',
+  'manager',
+  'contributer'
+]
+
+let cnt = 0
+
 $('button').onclick = () => {
-  const num = ~~(Math.random() * 999)
-  $('.num').innerText = num
-  flip.flipTo({to: num, direct: true})
+  flip.flipTo({to: title[++cnt%4]})
 }

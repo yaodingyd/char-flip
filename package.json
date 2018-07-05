@@ -1,10 +1,10 @@
 {
   "name": "number-flip",
-  "version": "1.0.20",
-  "description": "Change number with flipping animation",
+  "version": "1.0.0",
+  "description": "Change characters with flipping animation",
   "main": "number-flip.js",
-  "repository": "https://github.com/gaoryrt/flip.git",
-  "author": "gaoryrt",
+  "repository": "https://github.com/yaodingyd/char-flip.git",
+  "author": "yaodingyd",
   "license": "MIT",
   "dependencies": {
     "gelerator": "^1.1.52"
